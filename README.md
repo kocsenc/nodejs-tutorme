@@ -254,3 +254,22 @@ API call to log out of the system.
     </td>
   </tr>
 </table>
+
+#### 2.5 Example
+
+Request Body
+
+```javascript
+{
+  "email": "user@example.com",
+  "token": "really long string"
+}
+```
+
+Response Body
+
+```javascript
+{
+  "status": "SUCCESS"
+}
+```
