@@ -89,8 +89,9 @@ app.post('/api/logout', function(req, res, next) {
     res.send({ 'status': 'SUCCESS' });
 });
 
+// Change user password
 app.post('/api/changePassword', function(req, res, next) {
-    app.get('db')
+    res.send({ 'status': 'NOT_IMPLEMENTED' });
 });
 
 // Register
