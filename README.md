@@ -11,7 +11,7 @@ The backend uses a simple RESTful API to interact with the server.
 
 #### 1.1 Summary
 
-<table class="table table-striped">
+<table>
   <tr>
     <td>
       URL
@@ -144,3 +144,113 @@ Response Body
   "token": "really long string"
 }
 ```
+
+### 2. Logout
+
+#### 1.1 Summary
+
+<table>
+  <tr>
+    <td>
+      URL
+    </td>
+    <td>
+      <code>/api/logout</code>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Method
+    </td>
+    <td>
+      <code>POST</code>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Version
+    </td>
+    <td>
+      1
+    </td>
+  </tr>
+  <tr>
+    <td>
+      Permission
+    </td>
+    <td>
+      API
+    </td>
+  </tr>
+</table>
+
+#### 2.2 Description
+
+API call to log out of the system.
+
+#### 2.3 Arguments
+
+<table>
+  <tr>
+    <th>
+      Parameter
+    </th>
+    <th>
+      Description
+    </th>
+    <th>
+      Required
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <code>email</code>
+    </td>
+    <td>
+      Email of the user.
+    </td>
+    <td>
+      Required
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>token</code>
+    </td>
+    <td>
+      Temporary authentication token.
+    </td>
+    <td>
+      Required
+    </td>
+  </tr>
+</table>
+
+#### 2.4 Response
+
+<table>
+  <tr>
+    <th>
+      Parameter
+    </th>
+    <th>
+      Description
+    </th>
+  </tr>
+  <tr>
+    <td>
+      <code>status</code>
+    </td>
+    <td>
+      Result of the request (SUCCESS, ERROR, or NOT_IMPLEMENTED).
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>message</code>
+    </td>
+    <td>
+      Explicit error message that occurred server side. Included on ERROR.
+    </td>
+  </tr>
+</table>
