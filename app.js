@@ -31,7 +31,8 @@ app.all('/api/*', function(req, res, next) {
 
         // No token set means user is not logged in
         if (!row.token || (req.body.token != row.token)) {
-            next(new Error(401));
+            res.send({ 'status': 'ERROR', 'message': 'Token mismatch: ' + req.body.token });
+            return;
         } else {
             next();
         }
@@ -88,7 +89,11 @@ app.post('/api/logout', function(req, res, next) {
     res.send({ 'status': 'SUCCESS' });
 });
 
-// Regisiter
+app.post('/api/changePassword', function(req, res, next) {
+    app.get('db')
+});
+
+// Register
 // TODO: Check for existing user
 app.post('/register', function(req, res, next) {
     if (!req.body.type || !req.body.email || !req.body.password || !req.body.postal) {
