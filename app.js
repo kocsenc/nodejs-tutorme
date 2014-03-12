@@ -12,12 +12,12 @@ app.configure(function() {
 
 app.configure('development', function() {
     app.enable('debug');
-    app.set('db', new sqlite3.Database('dev.db'));
+    app.set('db', new sqlite3.Database(__dirname + '/dev.db'));
 });
 
 app.configure('production', function() {
     app.disable('debug');
-    app.set('db', new sqlite3.Database('prod.db'));
+    app.set('db', new sqlite3.Database(__dirname + '/prod.db'));
 });
 
 // Set API Security
