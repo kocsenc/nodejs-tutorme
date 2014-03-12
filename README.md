@@ -147,7 +147,7 @@ Response Body
 
 ### 2. Logout
 
-#### 1.1 Summary
+#### 2.1 Summary
 
 <table>
   <tr>
