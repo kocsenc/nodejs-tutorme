@@ -112,7 +112,15 @@ API call to authenticate against the system.
       <code>token</code>
     </td>
     <td>
-      Authentication token to be included in every subsequent API request.
+      Authentication token to be included in every subsequent API request. Included on SUCCESS.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <code>message</code>
+    </td>
+    <td>
+      Explicit error message that occurred server side. Included on ERROR.
     </td>
   </tr>
 </table>
