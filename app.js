@@ -1,7 +1,16 @@
+var fs = require('fs');
+var https = require('https');
 var express = require('express');
 var crypto = require('crypto');
 var sqlite3 = require('sqlite3');
 var app = express();
+
+var options = {
+    key: fs.readFileSync('./ssl/key.pem'),
+    cert: fs.readFileSync('./ssl/cert.pem')
+}
+
+var port = 3000;
 
 // Set a few internal variables
 app.configure(function() {
@@ -120,7 +129,7 @@ app.post('/register', function(req, res, next) {
 });
 
 // Now, start the server.
-var server = app.listen(3000, function() {
+var server = https.createServer(options, app).listen(port, function() {
     if (app.enabled('debug')) {
         console.log('***** RUNNING IN DEBUG MODE *****');
     } else {
