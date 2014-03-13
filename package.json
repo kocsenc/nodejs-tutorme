@@ -1,0 +1,11 @@
+{
+  "name": "tutorme-node",
+  "description": "Backend of Tutor Me",
+  "version": "0.0.1",
+  "license": "BSD-3-Clause",
+  "private": true,
+  "dependencies": {
+    "express": "3.4.x",
+    "sqlite3": "2.2.0"
+  }
+}
