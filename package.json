@@ -3,6 +3,9 @@
   "description": "Backend of Tutor Me",
   "version": "0.0.1",
   "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">=0.10.26"
+  },
   "private": true,
   "dependencies": {
     "express": "3.4.x",
