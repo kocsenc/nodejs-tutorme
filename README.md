@@ -38,6 +38,16 @@ If you have nodejs-tutorme installed system-wide, then use systemd to start the 
 ```
 **Note: The systemd service file is set to run in production mode by default.**
 
+## Generating SSL Certificate
+
+To generate a self-signed certificate to use in conjunction with the server, run the following inside a directory called `ssl` within the project folder.
+
+```sh
+$ openssl req -nodes -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
+```
+
+This will generate a key and certificate, called `key.pem` and `cert.pem`, respectively. The certificate is set to expire after 365 days and no password is required for the key (remove the `-nodes` parameter to change this behavior).
+
 ## Useful Links
 
 * [nodejs-tutorme API documentation](https://github.com/kocsenc/zakdost-node/wiki/API)
