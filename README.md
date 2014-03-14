@@ -1,12 +1,12 @@
-# tutorme-node
+# nodejs-tutorme
 
-The tutorme-node repository contains the server side code backend for the mobile app. It is written using NodeJS, Express, and all the other bits and pieces that come with these frameworks.
+The nodejs-tutorme repository contains the server side code backend for the mobile app. It is written using NodeJS, Express, and all the other bits and pieces that come with these frameworks.
 
 ## Instructions
 
 In order to run the server, you need to have `node` and `npm` installed on your system. Refer to the nodejs documentation for instructions on how to install nodejs to your system.
 
-Once you have these packages install, change your working directory to the tutorme-node project. Then, run the following:
+Once you have these packages install, change your working directory to the nodejs-tutorme project. Then, run the following:
 
 ```sh
 $ npm install
@@ -34,5 +34,5 @@ $ nodemon app.js
 
 ## Useful Links
 
-* [tutorme-node API documentation](https://github.com/kocsenc/zakdost-node/wiki/API)
+* [nodejs-tutorme API documentation](https://github.com/kocsenc/zakdost-node/wiki/API)
 * [node-sqlite3 API documentation](https://github.com/mapbox/node-sqlite3/wiki/API)

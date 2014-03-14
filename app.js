@@ -14,6 +14,18 @@ var options = {
 
 var port = 3000;
 
+function initDatabase(dbPath) {
+    var db;
+    if (fs.existsSync(dbPath)) {
+        db = new sqlite3.Database(dbPath);
+    } else {
+        db = new sqlite3.Database(dbPath);
+        db.run("CREATE TABLE USERS(TYPE INT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL, SALT TEXT NOT NULL, POSTAL TEXT, TOKEN TEXT);");
+    }
+
+    return db;
+}
+
 // Set a few internal variables
 app.configure(function() {
     app.use(express.json());
@@ -23,12 +35,12 @@ app.configure(function() {
 
 app.configure('development', function() {
     app.enable('debug');
-    app.set('db', new sqlite3.Database(__dirname + '/dev.db'));
+    app.set('db', initDatabase('dev.db'));
 });
 
 app.configure('production', function() {
     app.disable('debug');
-    app.set('db', new sqlite3.Database(__dirname + '/prod.db'));
+    app.set('db', initDatabase('prod.db'));
 });
 
 // Set API Security
