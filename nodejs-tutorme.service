@@ -2,9 +2,9 @@
 Description=Backend of Tutor Me
 
 [Service]
-Environment="NODE_ENV=development"
-WorkingDirectory=/srv/node
-ExecStart=/usr/bin/node /srv/node/app.js
+Environment="NODE_ENV=production"
+WorkingDirectory=/srv/nodejs-tutorme
+ExecStart=/usr/bin/node /srv/nodejs-tutorme/app.js
 User=node
 
 [Install]
