@@ -20,7 +20,7 @@ function initDatabase(dbPath) {
         db = new sqlite3.Database(dbPath);
     } else {
         db = new sqlite3.Database(dbPath);
-        db.run("CREATE TABLE USERS(TYPE INT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL, SALT TEXT NOT NULL, POSTAL TEXT, TOKEN TEXT);");
+        db.run("CREATE TABLE USERS(TYPE INT NOT NULL, NAME TEXT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL, SALT TEXT NOT NULL, POSTAL TEXT, TOKEN TEXT);");
     }
 
     return db;
@@ -68,7 +68,7 @@ app.post('/login', function(req, res, next) {
         res.send({ 'status': 'ERROR', 'message': 'Invalid parameters.' });
     }
 
-    app.get('db').all("SELECT EMAIL AS email, PASSWORD AS password, SALT AS salt from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;", function(err, rows) {
+    app.get('db').all("SELECT TYPE AS type, NAME AS name, EMAIL AS email, PASSWORD AS password, SALT AS salt, POSTAL AS postal from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;", function(err, rows) {
         if (!rows[0]) {
             res.send({ 'status': 'ERROR', 'message': 'Oops, that user doesn\'t exist yet.' });
             return;
@@ -79,8 +79,9 @@ app.post('/login', function(req, res, next) {
 
         if (app.enabled('debug')) {
             console.log("*** Login Attempt ***");
-            console.log("** SELECT EMAIL AS email, PASSWORD AS password, SALT AS salt from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;");
+            console.log("** SELECT TYPE AS type, NAME AS name, EMAIL AS email, PASSWORD AS password, SALT AS salt, POSTAL AS postal from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;");
             console.log("* Calculated hash: " + tmpHash + ", DB Hash: " + row.password + ", Match? " + (row.password == tmpHash).toString());
+            console.log("* Returned user: " + row);
         }
         
         if (row.password == tmpHash) {
@@ -93,7 +94,17 @@ app.post('/login', function(req, res, next) {
                     console.log("** UPDATE USERS SET TOKEN = '" + tmpToken + "' WHERE EMAIL = '" + req.body.email + "';");
                 }
 
-                res.send({ 'status': 'SUCCESS', 'token': tmpToken });
+                res.send(
+                { 
+                    'status': 'SUCCESS',
+                    'token': tmpToken,
+                    'user': {
+                        'type': row.type,
+                        'name': row.name,
+                        'email': row.email,
+                        'postal': row.postal
+                    }
+                });
             });
         } else {
             res.send({ 'status': 'ERROR', 'message': 'Email and/or password may be incorrect.' });
@@ -120,12 +131,13 @@ app.post('/api/changePassword', function(req, res, next) {
 // Register
 // TODO: Check for existing user
 app.post('/register', function(req, res, next) {
-    if (!req.body.type || !req.body.email || !req.body.password || !req.body.postal) {
+    if (!req.body.type || !req.body.name || !req.body.email || !req.body.password || !req.body.postal) {
         res.send({ 'status': 'ERROR', 'message': 'Invalid parameters.' });
     } else {
         crypto.randomBytes(12, function(ex, buf) {
-            app.get('db').run("INSERT INTO USERS (TYPE, EMAIL, PASSWORD, SALT, POSTAL, TOKEN) VALUES($type, $email, $password, $salt, $postal, $token)", {
+            app.get('db').run("INSERT INTO USERS (TYPE, NAME, EMAIL, PASSWORD, SALT, POSTAL, TOKEN) VALUES($type, $name, $email, $password, $salt, $postal, $token)", {
                 $type: req.body.type,
+                $name: req.body.name,
                 $email: req.body.email,
                 $password: crypto.createHash('sha256').update(req.body.password + "." + buf.toString('hex')).digest('base64'),
                 $salt: buf.toString('hex'),
