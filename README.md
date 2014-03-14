@@ -31,6 +31,12 @@ $ npm install nodemon
 $ nodemon app.js
 ```
 
+If you have nodejs-tutorme installed system-wide, then use systemd to start the server:
+
+```sh
+# systemctl start nodejs-tutorme
+```
+
 
 ## Useful Links
 
