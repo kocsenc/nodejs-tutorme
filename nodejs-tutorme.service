@@ -1,0 +1,11 @@
+[Unit]
+Description=Backend of Tutor Me
+
+[Service]
+Environment="NODE_ENV=development"
+WorkingDirectory=/srv/node
+ExecStart=/usr/bin/node /srv/node/app.js
+User=node
+
+[Install]
+WantedBy=multi-user.target
