@@ -36,7 +36,7 @@ If you have nodejs-tutorme installed system-wide, then use systemd to start the 
 ```sh
 # systemctl start nodejs-tutorme
 ```
-
+**Note: The systemd service file is set to run in production mode by default.**
 
 ## Useful Links
 
