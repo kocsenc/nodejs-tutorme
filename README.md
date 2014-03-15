@@ -40,7 +40,7 @@ If you have nodejs-tutorme installed system-wide, then use systemd to start the 
 
 ## Generating SSL Certificate
 
-To generate a self-signed certificate to use in conjunction with the server, run the following inside a directory called `ssl` within the project folder.
+To generate a self-signed certificate to use in conjunction with the server, run the following inside a directory called `ssl` within the project folder (or modify `config.js` to point to the key and certificate).
 
 ```sh
 $ openssl req -nodes -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365
