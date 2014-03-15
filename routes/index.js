@@ -1,13 +1,7 @@
 var crypto = require('crypto');
 var db = require('../models');
 
-exports.index = function(req, res){
-  res.send({
-    status: 'error',
-    message: 'invalid call'
-  });
-}
-
+// API Authentication Check
 exports.checkAuthentication = function(req, res, next) {
   // TODO: Make set of whitelisted API calls in config.fs and check here
   if (req.path === '/users/login' || req.path === '/users/register') {

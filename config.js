@@ -1,4 +1,5 @@
 var config = {
+  mode: 'development',
   port: 3000,
   ssl: {
     key:  'ssl/key.pem',
@@ -6,6 +7,18 @@ var config = {
   },
   syncOptions: {
     force: false
+  },
+  db: { 
+    development: {
+      name: 'tutorme_dev',
+      user: 'devUser',
+      password: 'dev-pass'
+    },
+    production: {
+      name: 'tutorme_prod',
+      user: 'prodUser',
+      password: ''
+    }
   }
 }
 

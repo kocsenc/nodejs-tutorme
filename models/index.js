@@ -2,7 +2,8 @@ var fs        = require('fs');
 var path      = require('path');
 var Sequelize = require('sequelize');
 var lodash    = require('lodash');
-var sequelize = new Sequelize('sequelize_test', 'root', 'new-password');
+var config    = require('../config');
+var sequelize = new Sequelize(config.db[config.mode].name, config.db[config.mode].user, config.db[config.mode].password);
 var db        = {};
 
 fs.readdirSync(__dirname).filter(function(file) {
