@@ -10,13 +10,13 @@ var config = {
   },
   db: { 
     development: {
-      name: 'tutorme_dev',
-      user: 'devUser',
-      password: 'dev-pass'
+      name: '',
+      user: '',
+      password: ''
     },
     production: {
-      name: 'tutorme_prod',
-      user: 'prodUser',
+      name: '',
+      user: '',
       password: ''
     }
   }
