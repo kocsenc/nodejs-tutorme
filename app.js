@@ -1,167 +1,63 @@
-#!/usr/bin/node
-
-var fs = require('fs');
-var https = require('https');
 var express = require('express');
-var crypto = require('crypto');
-var sqlite3 = require('sqlite3');
+var https   = require('https');
+var path    = require('path');
+var fs      = require('fs');
+var config  = require('./config');
+var routes  = require('./routes');
+var user    = require('./routes/user');
+var db      = require('./models');
+
 var app = express();
 
 var options = {
-    key: fs.readFileSync('./ssl/key.pem'),
-    cert: fs.readFileSync('./ssl/cert.pem')
+  key: fs.readFileSync(path.join(__dirname, config.ssl.key)),
+  cert: fs.readFileSync(path.join(__dirname, config.ssl.cert))
 }
 
-var port = 3000;
-
-function initDatabase(dbPath) {
-    var db;
-    if (fs.existsSync(dbPath)) {
-        db = new sqlite3.Database(dbPath);
-    } else {
-        db = new sqlite3.Database(dbPath);
-        db.run("CREATE TABLE USERS(TYPE INT NOT NULL, NAME TEXT NOT NULL, EMAIL TEXT NOT NULL, PASSWORD TEXT NOT NULL, SALT TEXT NOT NULL, POSTAL TEXT, TOKEN TEXT);");
-    }
-
-    return db;
-}
-
-// Set a few internal variables
+// Configuration - All Environments
 app.configure(function() {
-    app.use(express.json());
-    app.use(express.urlencoded());
-    app.use(app.router);
+  app.set('port', config.port);
+  app.use(express.favicon());
+  app.use(express.json());
+  app.use(express.urlencoded());
+  app.use(express.methodOverride());
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'public')));
 });
 
+// Configuration - Development Environment
 app.configure('development', function() {
-    app.enable('debug');
-    app.set('db', initDatabase('dev.db'));
+  console.log('***** RUNNING IN DEVELOPMENT MODE *****');
+  app.enable('debug');
+  app.use(express.logger('dev'));
+  app.use(express.errorHandler());
 });
 
+// Configuration - Production Environment
 app.configure('production', function() {
-    app.disable('debug');
-    app.set('db', initDatabase('prod.db'));
+  console.log('***** RUNNING IN PRODUCTION MODE *****');
+  app.disable('debug');
+  app.use(express.logger());
 });
 
-// Set API Security
-app.all('/api/*', function(req, res, next) {
-    app.get('db').each("SELECT TOKEN AS token FROM USERS WHERE EMAIL='" + req.body.email + "' LIMIT 1;", function(err, row) {
-        if (app.enabled('debug')) {
-            console.log("*** Auth Attempt ***");
-            console.log("** SELECT TOKEN AS token FROM USERS WHERE EMAIL='" + req.body.email + "' LIMIT 1;");
-            console.log("* Received token: " + req.body.token + ", Retrieved Token: " + row.token + " Match? " + (req.body.token == row.token).toString());
-        }
+// Check API Authentication
+app.all('*', function(req, res, next) {
+  routes.checkAuthentication(req, res, next);
+});
 
-        // No token set means user is not logged in
-        if (!row.token || (req.body.token != row.token)) {
-            res.send({ 'status': 'ERROR', 'message': 'Token mismatch: ' + req.body.token });
-            return;
-        } else {
-            next();
-        }
+// Routing Information
+app.post('/users/register', user.register);
+app.post('/users/login', user.login);
+app.post('/users/logout', user.logout);
+
+// DB Setup and Server Initialization
+db.sequelize.sync(config.syncOptions).complete(function(err) {
+  if (err) {
+    throw err;
+  } else {
+    https.createServer(options, app).listen(app.get('port'), function() {
+      console.log('Express server listening on port ' + app.get('port'));
     });
-});
-
-// Login to system
-app.post('/login', function(req, res, next) {
-    if (!req.body.email || !req.body.password) {
-        res.send({ 'status': 'ERROR', 'message': 'Invalid parameters.' });
-    }
-
-    app.get('db').all("SELECT TYPE AS type, NAME AS name, EMAIL AS email, PASSWORD AS password, SALT AS salt, POSTAL AS postal from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;", function(err, rows) {
-        if (!rows[0]) {
-            res.send({ 'status': 'ERROR', 'message': 'Oops, that user doesn\'t exist yet.' });
-            return;
-        }
-
-        var row = rows[0];
-        var tmpHash = crypto.createHash('sha256').update(req.body.password + "." + row.salt).digest('base64');
-
-        if (app.enabled('debug')) {
-            console.log("*** Login Attempt ***");
-            console.log("** SELECT TYPE AS type, NAME AS name, EMAIL AS email, PASSWORD AS password, SALT AS salt, POSTAL AS postal from USERS WHERE EMAIL = '" + req.body.email + "' LIMIT 1;");
-            console.log("* Calculated hash: " + tmpHash + ", DB Hash: " + row.password + ", Match? " + (row.password == tmpHash).toString());
-            console.log("* Returned user: " + row);
-        }
-        
-        if (row.password == tmpHash) {
-            var tmpToken = '';
-            crypto.randomBytes(24, function(ex, buf) {
-                tmpToken = buf.toString('hex');
-                
-                app.get('db').run("UPDATE USERS SET TOKEN='" + tmpToken + "' WHERE EMAIL = '" + req.body.email + "';");
-                if (app.enabled('debug')) {
-                    console.log("** UPDATE USERS SET TOKEN = '" + tmpToken + "' WHERE EMAIL = '" + req.body.email + "';");
-                }
-
-                res.send(
-                { 
-                    'status': 'SUCCESS',
-                    'token': tmpToken,
-                    'user': {
-                        'type': row.type,
-                        'name': row.name,
-                        'email': row.email,
-                        'postal': row.postal
-                    }
-                });
-            });
-        } else {
-            res.send({ 'status': 'ERROR', 'message': 'Email and/or password may be incorrect.' });
-        }
-    });
-});
-
-// Logout of system
-app.post('/api/logout', function(req, res, next) {
-    app.get('db').run("UPDATE USERS SET TOKEN='' WHERE EMAIL = '" + req.body.email + "';");
-    if (app.enabled('debug')) {
-        console.log("*** Logout Attempt ***");
-        console.log("** UPDATE USERS SET TOKEN='' WHERE EMAIL = '" + req.body.email + "';");
-    }
-
-    res.send({ 'status': 'SUCCESS' });
-});
-
-// Change user password
-app.post('/api/changePassword', function(req, res, next) {
-    res.send({ 'status': 'NOT_IMPLEMENTED' });
-});
-
-// Register
-// TODO: Check for existing user
-app.post('/register', function(req, res, next) {
-    if (!req.body.type || !req.body.name || !req.body.email || !req.body.password || !req.body.postal) {
-        res.send({ 'status': 'ERROR', 'message': 'Invalid parameters.' });
-    } else {
-        crypto.randomBytes(12, function(ex, buf) {
-            app.get('db').run("INSERT INTO USERS (TYPE, NAME, EMAIL, PASSWORD, SALT, POSTAL, TOKEN) VALUES($type, $name, $email, $password, $salt, $postal, $token)", {
-                $type: req.body.type,
-                $name: req.body.name,
-                $email: req.body.email,
-                $password: crypto.createHash('sha256').update(req.body.password + "." + buf.toString('hex')).digest('base64'),
-                $salt: buf.toString('hex'),
-                $postal: req.body.postal,
-                $token: ''
-            });
-
-            if (app.enabled('debug')) {
-                console.log("*** Register Attempt ***");
-            }
-
-            res.send({ 'status': 'SUCCESS' });
-        });
-    }
-});
-
-// Now, start the server.
-var server = https.createServer(options, app).listen(port, function() {
-    if (app.enabled('debug')) {
-        console.log('***** RUNNING IN DEBUG MODE *****');
-    } else {
-        console.log('***** RUNNING IN PRODUCTION MODE *****');
-    }
-
-    console.log('Listening on port %d', server.address().port);
+  }
 });
 
