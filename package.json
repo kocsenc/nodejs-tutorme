@@ -1,14 +1,20 @@
 {
   "name": "nodejs-tutorme",
-  "description": "Backend of Tutor Me",
+  "license": "MIT",
   "version": "0.0.1",
-  "license": "BSD-3-Clause",
-  "engines": {
-    "node": ">=0.10.26"
-  },
   "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "kocsenc/zakdost-node"
+  }
   "dependencies": {
-    "express": "3.4.x",
-    "sqlite3": "2.2.0"
+    "express": "3.4.8",
+    "jade": "*",
+    "mysql": "~2.0.0-rc2",
+    "sequelize": "~2.0.0-beta.2",
+    "lodash": "~2.4.1"
   }
 }
