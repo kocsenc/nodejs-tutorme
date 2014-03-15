@@ -51,4 +51,4 @@ This will generate a key and certificate, called `key.pem` and `cert.pem`, respe
 ## Useful Links
 
 * [nodejs-tutorme API documentation](https://github.com/kocsenc/zakdost-node/wiki/API)
-* [node-sqlite3 API documentation](https://github.com/mapbox/node-sqlite3/wiki/API)
+* [Sequelize API documentation](http://sequelizejs.com/docs/latest/installation)
