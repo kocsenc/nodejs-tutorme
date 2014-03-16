@@ -1,3 +1,4 @@
+// User Model
 module.exports = function(sequelize, DataTypes) {
   var User = sequelize.define('User', {
     type:     { type: DataTypes.INTEGER, allowNull: false },
@@ -8,8 +9,10 @@ module.exports = function(sequelize, DataTypes) {
     token:    { type: DataTypes.STRING, allowNull: true }
   }, {
     associate: function(models) {
+      User.hasMany(models.Message, { foreignKey: 'SenderId' });
     }
   });
 
   return User;
 }
+

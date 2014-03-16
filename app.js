@@ -5,6 +5,7 @@ var fs      = require('fs');
 var config  = require('./config');
 var routes  = require('./routes');
 var user    = require('./routes/user');
+var message = require('./routes/message');
 var db      = require('./models');
 
 var app = express();
@@ -49,6 +50,9 @@ app.all('*', function(req, res, next) {
 app.post('/users/register', user.register);
 app.post('/users/login', user.login);
 app.post('/users/logout', user.logout);
+app.post('/users/search', user.search);
+
+app.post('/messages/send', message.send);
 
 // DB Setup and Server Initialization
 db.sequelize.sync(config.syncOptions).complete(function(err) {

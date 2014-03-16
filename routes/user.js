@@ -61,3 +61,10 @@ exports.logout = function(req, res) {
   });
 }
 
+// User Search
+exports.search = function(req, res) {
+  res.send({
+    status: 'not_implemented'
+  });
+}
+

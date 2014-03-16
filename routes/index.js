@@ -23,6 +23,9 @@ exports.checkAuthentication = function(req, res, next) {
           });
         } else {
           if (req.param('token') == user.token) {
+            // Add user instance to request to reduce
+            // amount of lookups that are performed.
+            req.user = user;
             return next();
           } else {
             res.send({
