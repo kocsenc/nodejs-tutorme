@@ -68,3 +68,11 @@ exports.search = function(req, res) {
   });
 }
 
+// System cleanup
+exports.clearUserTokens = function(callback) {
+  db.User.update({ token: null }).success(function() {
+    console.info('*** User tokens cleared');
+    callback();
+  });
+}
+

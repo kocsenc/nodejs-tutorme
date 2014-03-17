@@ -12,7 +12,7 @@ console.info('***** Starting Up');
 
 var app = express();
 
-var options = {
+config.serverOptions = {
   key: fs.readFileSync(path.join(__dirname, config.ssl.key)),
   cert: fs.readFileSync(path.join(__dirname, config.ssl.cert))
 }
@@ -69,7 +69,7 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
   if (err) {
     throw err;
   } else {
-    var server = https.createServer(options, app).listen(app.get('port'), function() {
+    var server = https.createServer(config.serverOptions, app).listen(app.get('port'), function() {
       console.info('*** Server listening on port ' + app.get('port'));
     });
     
@@ -85,7 +85,10 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
 
     server.on('close', function() {
       // TODO: Clear database of all tokens
-      console.info('***** Shutdown Complete');
+      console.info('*** Clearing user tokens');
+      user.clearUserTokens(function() {
+        console.info('***** Shutdown Complete');
+      });
     });
   }
 });
