@@ -7,23 +7,24 @@ PORT=${PORT:=3000}
 BASE=$URI://$URL:$PORT
 
 function register() {
-  curl -X POST -k -d "type=$2&name=$3&email=$4&password=$5&postal=$6" $BASE/users/register
+  curl -v -X POST -k -d "type=$2&name=$3&email=$4&password=$5&postal=$6" $BASE/users/register
 }
 
 function login() {
-  curl -X POST -k -d "email=$2&password=$3" $BASE/users/login
+  curl -v -X POST -k -d "email=$2&password=$3" $BASE/users/login
 }
 
 function logout() {
-  curl -X POST -k -d "email=$2&token=$3" $BASE/users/logout
+  curl -v -X POST -k -d "email=$2&token=$3" $BASE/users/logout
 }
 
 function send-message() {
-  curl -X POST -k -d "email=$2&token=$3&userId=$4&contents=$5" $BASE/messages/send
+  curl -v -X POST -k -d "email=$2&token=$3&userId=$4&contents=$5" $BASE/messages/send
 }
 
 function get-messages() {
-  curl -X GET -k -d "email=$2&token=$3" $BASE/messages
+  echo -e "curl -v -X GET -k -d \"email=$2&token=$3\" $BASE/messages"
+  curl -v -X GET -k -d "email=$2&token=$3" $BASE/messages
 }
 
 function help() {
@@ -74,7 +75,7 @@ case $1 in
     then
       help
     else
-      get-messages
+      get-messages $@
     fi
     ;;
   *)
