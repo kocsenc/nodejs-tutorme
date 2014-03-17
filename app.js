@@ -72,6 +72,11 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
     var server = https.createServer(options, app).listen(app.get('port'), function() {
       console.info('*** Server listening on port ' + app.get('port'));
     });
+    
+    process.on('SIGINT', function() {
+      console.info('\b\b***** SIGINT Caught');
+      server.close();
+    });
 
     process.on('SIGTERM', function() {
       console.info('***** SIGTERM Caught');
