@@ -31,8 +31,8 @@ function help() {
   echo -e "\t* register:\t type name email password postal";
   echo -e "\t* login:\t email password";
   echo -e "\t* logout:\t email token";
-  echo -e "\t* send-message:\t userID message";
-  echo -e "\t* get-messages:\t No arguments";
+  echo -e "\t* send-message:\t email token userID message";
+  echo -e "\t* get-messages:\t email token";
   exit 1
 }
 
@@ -62,7 +62,7 @@ case $1 in
     fi
     ;;
   send-message)
-    if [ $# -ne 3 ]
+    if [ $# -ne 5 ]
     then
       help
     else
@@ -70,7 +70,7 @@ case $1 in
     fi
     ;;
   get-messages)
-    if [ $# -ne 2 ]
+    if [ $# -ne 3 ]
     then
       help
     else
