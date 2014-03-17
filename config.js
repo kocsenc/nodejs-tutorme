@@ -6,7 +6,7 @@ var config = {
     cert: 'ssl/cert.pem'
   },
   syncOptions: {
-    force: true
+    force: false
   },
   db: { 
     development: {
