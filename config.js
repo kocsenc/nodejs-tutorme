@@ -19,7 +19,11 @@ var config = {
       user: '',
       password: ''
     }
-  }
+  },
+  permissions: {
+    all: ['/users/login', '/users/register', '/api/version']
+  },
+  apiVersion: '2' // don't touch!
 }
 
 module.exports = config;

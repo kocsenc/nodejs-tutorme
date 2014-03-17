@@ -7,7 +7,6 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     associate: function(models) {
-      Message.belongsTo(models.User, { as: 'Receiver', foreignKey: 'ReceiverId' });
     }
   });
 
