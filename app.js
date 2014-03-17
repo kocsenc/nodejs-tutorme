@@ -8,6 +8,8 @@ var user    = require('./routes/user');
 var message = require('./routes/message');
 var db      = require('./models');
 
+console.info('***** Starting Up');
+
 var app = express();
 
 var options = {
@@ -29,7 +31,7 @@ app.configure(function() {
 
 // Configuration - Development Environment
 app.configure('development', function() {
-  console.log('***** RUNNING IN DEVELOPMENT MODE *****');
+  console.info('**** RUNNING IN DEVELOPMENT MODE');
   app.enable('debug');
   app.use(express.logger('dev'));
   app.use(express.errorHandler());
@@ -37,7 +39,7 @@ app.configure('development', function() {
 
 // Configuration - Production Environment
 app.configure('production', function() {
-  console.log('***** RUNNING IN PRODUCTION MODE *****');
+  console.info('**** RUNNING IN PRODUCTION MODE');
   app.disable('debug');
   app.use(express.logger());
 });
@@ -67,8 +69,17 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
   if (err) {
     throw err;
   } else {
-    https.createServer(options, app).listen(app.get('port'), function() {
-      console.log('Express server listening on port ' + app.get('port'));
+    var server = https.createServer(options, app).listen(app.get('port'), function() {
+      console.info('*** Server listening on port ' + app.get('port'));
+    });
+
+    process.on('SIGTERM', function() {
+      console.info('***** SIGTERM Caught');
+      server.close();
+    });
+
+    server.on('close', function() {
+      console.info('***** Shutdown Complete');
     });
   }
 });
