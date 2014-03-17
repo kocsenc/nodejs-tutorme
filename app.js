@@ -79,6 +79,7 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
     });
 
     server.on('close', function() {
+      // TODO: Clear database of all tokens
       console.info('***** Shutdown Complete');
     });
   }
