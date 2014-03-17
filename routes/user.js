@@ -31,23 +31,36 @@ exports.register = function(req, res) {
 // User Login
 exports.login = function(req, res) {
   db.User.find({ where: { email: req.param('email') } }).success(function(user) {
-    var tmpHash = crypto.createHash('sha512').update(req.param('password') + '.' + user.salt).digest('base64');
-    if (tmpHash == user.password) {
-      crypto.randomBytes(24, function(ex, buf) {
-        user.updateAttributes({
-          token: buf.toString('hex')
-        });
-
-        res.send({
-          status: 'success',
-          token: buf.toString('hex')
-        });
-      });
-    } else {
+    if (!user) {
       res.send({
         status: 'error',
         message: 'Email and/or password may be incorrect.'
       });
+    } else {
+      var tmpHash = crypto.createHash('sha512').update(req.param('password') + '.' + user.salt).digest('base64');
+      if (tmpHash == user.password) {
+        crypto.randomBytes(24, function(ex, buf) {
+          user.updateAttributes({
+            token: buf.toString('hex')
+          });
+          
+          res.send({
+            status: 'success',
+            token: buf.toString('hex'),
+            user: {
+              type: user.type,
+              name: user.name,
+              email: user.email,
+              postal: user.postal
+            }
+          });
+        });
+      } else {
+        res.send({
+          status: 'error',
+          message: 'Email and/or password may be incorrect.'
+        });
+      }
     }
   });
 }
