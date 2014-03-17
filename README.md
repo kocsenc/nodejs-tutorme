@@ -12,7 +12,29 @@ Once you have these packages install, change your working directory to the nodej
 $ npm install
 ```
 
-This will automatically install all the required dependencies that the server software relies on. Once this finished, the server is ready to run. To do so, simply set the executable bit on the `app.js` file and execute like so:
+This will automatically install all the required dependencies that the server software relies on. Next, configure the server by editing `config.js`. The key areas are the `ssl` object and the `db` object.
+
+```javascript
+ssl: {
+  key:  'ssl/key.pem',
+  cert: 'ssl/cert.pem'
+}
+
+db: { 
+  development: {
+    name: '',
+    user: '',
+    password: ''
+  },
+  production: {
+    name: '',
+    user: '',
+    password: ''
+  }
+}
+```
+
+Once you have setup the configuration, the server is ready to run. Now, simply set the executable bit on the `app.js` file and execute like so:
 
 ```sh
 $ ./app.js
