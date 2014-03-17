@@ -18,6 +18,7 @@ var options = {
 // Configuration - All Environments
 app.configure(function() {
   app.set('port', config.port);
+  app.set('apiVersion', config.apiVersion);
   app.use(express.favicon());
   app.use(express.json());
   app.use(express.urlencoded());
@@ -43,7 +44,7 @@ app.configure('production', function() {
 
 // Check API Authentication
 app.all('*', function(req, res, next) {
-  routes.checkAuthentication(req, res, next);
+  routes.checkAuthentication(req, res, next, config.permissions.all);
 });
 
 // Routing Information
@@ -52,7 +53,14 @@ app.post('/users/login', user.login);
 app.post('/users/logout', user.logout);
 app.post('/users/search', user.search);
 
+app.get('/messages', message.get);
 app.post('/messages/send', message.send);
+
+app.get('/api/version', function(req, res) {
+  res.send({
+    version: app.get('apiVersion')
+  });
+});
 
 // DB Setup and Server Initialization
 db.sequelize.sync(config.syncOptions).complete(function(err) {

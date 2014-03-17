@@ -19,8 +19,8 @@ exports.send = function(req, res) {
         db.Message.create({
           contents: contents
         }).success(function(message) {
-          req.user.addMessage(message);
-          message.setReceiver(toUser);
+          req.user.addSentMessage(message);
+          toUser.addReceivedMessage(message);
           res.send({
             status: 'success'
           });
@@ -28,5 +28,15 @@ exports.send = function(req, res) {
       }
     });
   }
+}
+
+exports.get = function(req, res) {
+  // this kind of code is when you know you did it correctly ;)
+  req.user.getReceivedMessages().success(function(messages) {
+    res.send({
+      status: 'success',
+      messages: messages
+    });
+  });
 }
 
