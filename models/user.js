@@ -6,9 +6,11 @@ module.exports = function(sequelize, DataTypes) {
     email:    { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     salt:     { type: DataTypes.STRING, allowNull: false },
+    postal:   { type: DataTypes.STRING, allowNull: false },
     token:    { type: DataTypes.STRING, allowNull: true }
   }, {
     associate: function(models) {
+      User.hasOne(models.Profile);
       User.hasMany(models.Message, { as: 'SentMessages', foreignKey: 'SenderId' });
       User.hasMany(models.Message, { as: 'ReceivedMessages', foreignKey: 'ReceiverId' });
     }

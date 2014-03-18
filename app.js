@@ -6,6 +6,7 @@ var config  = require('./config');
 var routes  = require('./routes');
 var user    = require('./routes/user');
 var message = require('./routes/message');
+var profile = require('./routes/profile');
 var db      = require('./models');
 
 console.info('***** Starting Up');
@@ -57,6 +58,9 @@ app.post('/users/search', user.search);
 
 app.get('/messages', message.get);
 app.post('/messages/send', message.send);
+
+app.post('/profiles', profile.create);
+app.get('/profiles/:id', profile.get);
 
 app.get('/api/version', function(req, res) {
   res.send({

@@ -17,7 +17,8 @@ exports.register = function(req, res) {
           name: req.param('name'),
           email: req.param('email'),
           password: crypto.createHash('sha512').update(req.param('password') + '.' + buf.toString('hex')).digest('base64'),
-          salt: buf.toString('hex')
+          salt: buf.toString('hex'),
+          postal: req.param('postal')
         }).success(function() {
           res.send({
             status: 'success'
