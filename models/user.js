@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
     email:    { type: DataTypes.STRING, allowNull: false },
     password: { type: DataTypes.STRING, allowNull: false },
     salt:     { type: DataTypes.STRING, allowNull: false },
+    postal:   { type: DataTypes.STRING, allowNull: false },
     token:    { type: DataTypes.STRING, allowNull: true }
   }, {
     associate: function(models) {
