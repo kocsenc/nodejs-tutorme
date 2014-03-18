@@ -63,7 +63,7 @@ app.post('/messages/send', message.send);
 app.post('/profiles', profile.create);
 app.get('/profiles/:id', profile.get);
 
-app.get('/api/version', function(req, res) {
+app.get('/version', function(req, res) {
   res.send({
     version: app.get('apiVersion')
   });
