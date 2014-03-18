@@ -2,6 +2,7 @@ var config = {
   mode: 'development',
   port: 3000,
   ssl: {
+    enabled: false,
     key:  'ssl/key.pem',
     cert: 'ssl/cert.pem'
   },

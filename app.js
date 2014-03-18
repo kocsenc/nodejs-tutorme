@@ -1,5 +1,4 @@
 var express = require('express');
-var https   = require('https');
 var path    = require('path');
 var fs      = require('fs');
 var config  = require('./config');
@@ -13,11 +12,6 @@ console.info('***** Starting Up');
 
 var app = express();
 
-config.serverOptions = {
-  key: fs.readFileSync(path.join(__dirname, config.ssl.key)),
-  cert: fs.readFileSync(path.join(__dirname, config.ssl.cert))
-}
-
 // Configuration - All Environments
 app.configure(function() {
   app.set('port', config.port);
@@ -28,6 +22,13 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
+  
+  if (config.ssl.enabled) {
+    config.serverOptions = {
+      key: fs.readFileSync(path.join(__dirname, config.ssl.key)),
+      cert: fs.readFileSync(path.join(__dirname, config.ssl.cert))
+    }
+  }
 });
 
 // Configuration - Development Environment
@@ -73,9 +74,15 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
   if (err) {
     throw err;
   } else {
-    var server = https.createServer(config.serverOptions, app).listen(app.get('port'), function() {
-      console.info('*** Server listening on port ' + app.get('port'));
-    });
+    if (config.ssl.enabled) {
+      var server = require('https').createServer(config.serverOptions, app).listen(app.get('port'), function() {
+        console.info('*** Server listening on port ' + app.get('port') + ' (SSL)');
+      });
+    } else {
+      var server = require('http').createServer(app).listen(app.get('port'), function() {
+        console.info('*** Server listening on port ' + app.get('port'));
+      });
+    }
     
     process.on('SIGINT', function() {
       console.info('\b\b***** SIGINT Caught');
@@ -88,7 +95,6 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
     });
 
     server.on('close', function() {
-      // TODO: Clear database of all tokens
       console.info('*** Clearing user tokens');
       user.clearUserTokens(function() {
         console.info('***** Shutdown Complete');
