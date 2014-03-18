@@ -1,6 +1,6 @@
-// TutorProfile Model
+// Profile Model
 module.exports = function(sequelize, DataTypes) {
-  var TutorProfile = sequelize.define('TutorProfile', {
+  var Profile = sequelize.define('Profile', {
     tagLine: {
       type: DataTypes.STRING,
       allowNull: false
@@ -11,10 +11,10 @@ module.exports = function(sequelize, DataTypes) {
     }
   }, {
     associate: function(models) {
-      TutorProfile.hasMany(models.ProfileItem);
+      Profile.hasMany(models.ProfileItem);
     }
   });
 
-  return TutorProfile;
+  return Profile;
 }
 
