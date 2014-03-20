@@ -13,6 +13,11 @@ module.exports = function(sequelize, DataTypes) {
       User.hasOne(models.Profile);
       User.hasMany(models.Message, { as: 'SentMessages', foreignKey: 'SenderId' });
       User.hasMany(models.Message, { as: 'ReceivedMessages', foreignKey: 'ReceiverId' });
+    },
+    getterMethods: {
+      isTutor: function() {
+        return this.type === '1';
+      }
     }
   });
 
