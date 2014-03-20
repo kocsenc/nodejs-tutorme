@@ -1,3 +1,13 @@
+/**
+ * Main server executable.
+ * @title Application Executable
+ * @overview Executable file that comprises the intiation of the server.
+ * @copyright (c) 2014, Craig Cabrey
+ * @license MIT
+ * @author Craig Cabrey
+ *
+*/
+
 var express = require('express');
 var path    = require('path');
 var fs      = require('fs');
