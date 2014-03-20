@@ -1,3 +1,4 @@
+var config = require('../config');
 var log = require('npmlog');
 var crypto = require('crypto');
 var db = require('../models');
@@ -38,5 +39,10 @@ exports.checkAuthentication = function(req, res, next, all) {
       });
     }
   }
+}
+
+// GET /version
+exports.version = function(req, res) {
+  res.success({ version: config.apiVersion });
 }
 

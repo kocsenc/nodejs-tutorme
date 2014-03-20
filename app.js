@@ -102,12 +102,7 @@ app.post('/profiles', profile.create);
 app.post('/profiles/vote/:id', profile.vote);
 app.get('/profiles/:id', profile.get);
 
-app.get('/version', function(req, res) {
-  res.send({
-    status: 'success',
-    version: app.get('apiVersion')
-  });
-});
+app.get('/version', routes.version);
 
 // DB Setup and Server Initialization
 db.sequelize.sync(config.syncOptions).complete(function(err) {
