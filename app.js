@@ -8,16 +8,17 @@
  *
 */
 
-var log     = require('npmlog');
+var log = require('npmlog');
 var express = require('express');
-var path    = require('path');
-var fs      = require('fs');
-var config  = require('./config');
-var routes  = require('./routes');
-var user    = require('./routes/user');
+var path = require('path');
+var fs = require('fs');
+var middleware = require('./util/middleware');
+var config = require('./config');
+var routes = require('./routes');
+var user = require('./routes/user');
 var message = require('./routes/message');
 var profile = require('./routes/profile');
-var db      = require('./models');
+var db = require('./models');
 
 log.info('[\u2026]', 'Initializing application...');
 
@@ -31,9 +32,8 @@ app.configure(function() {
   app.use(express.json());
   app.use(express.urlencoded());
   app.use(express.methodOverride());
-  app.use(injectMiddleware);
+  app.use(middleware.resUtils);
   app.use(app.router);
-  app.use(express.static(path.join(__dirname, 'public')));
   
   if (config.ssl.enabled) {
     config.serverOptions = {
@@ -54,36 +54,6 @@ app.configure('development', function() {
 app.configure('production', function() {
   log.info('[\u2026]', 'Production Mode');
 });
-
-// TODO: Move to external file
-function IllegalArgumentException(message) {
-  this.message = message;
-}
-
-// TODO: Move to external file
-function injectMiddleware(req, res, next) {
-  res.error = function(message) {
-    if (message) {
-      res.send({
-        status: 'error',
-        message: message
-      });
-    } else {
-      throw new IllegalArgumentException('invalid message');
-    }
-  }
-
-  res.success = function(resObj) {
-    if (!resObj) {
-      resObj = {};
-    }
-    
-    resObj.status = 'success';
-    res.send(resObj);
-  }
-
-  next();
-}
 
 // Check API Authentication
 app.all('*', function(req, res, next) {
