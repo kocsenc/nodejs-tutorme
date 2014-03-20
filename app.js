@@ -65,6 +65,7 @@ app.get('/profiles/:id', profile.get);
 
 app.get('/version', function(req, res) {
   res.send({
+    status: 'success',
     version: app.get('apiVersion')
   });
 });
