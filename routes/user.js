@@ -19,9 +19,17 @@ exports.register = function(req, res) {
           password: crypto.createHash('sha512').update(req.param('password') + '.' + buf.toString('hex')).digest('base64'),
           salt: buf.toString('hex'),
           postal: req.param('postal')
-        }).success(function() {
-          res.send({
-            status: 'success'
+        }).success(function(user) {
+          user.setProfile(db.Profile.build()).success(function(profile) {
+            res.success({
+              user: {
+                type: user.type,
+                name: user.name,
+                email: user.email,
+                postal: user.postal,
+                profile: profile
+              }
+            });
           });
         });
       });
