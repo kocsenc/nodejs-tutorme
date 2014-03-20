@@ -57,12 +57,21 @@ app.configure('production', function() {
   app.use(express.logger());
 });
 
+// TODO: Move to external file somehow
+function IllegalArgumentException(message) {
+  this.message = message;
+}
+
 function injectMiddleware(req, res, next) {
   res.error = function(message) {
-    res.send({
-      status: 'error',
-      message: message
-    });
+    if (message) {
+      res.send({
+        status: 'error',
+        message: message
+      });
+    } else {
+      throw new IllegalArgumentException('invalid message');
+    }
   }
 
   res.success = function(resObj) {
