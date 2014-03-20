@@ -39,10 +39,14 @@ exports.vote = function(req, res) {
     if (tutor) {
       if (tutor.type == 1) {
         tutor.getProfile().success(function(profile) {
-          profile.updateAttributes({ votes: profile.votes + 1 }).success(function() {
-            res.send({
-              status: 'success'
-            });
+          db.ProfileVote.find({ where: { UserId: req.user.id } }).success(function(vote) {
+            if (vote) {
+              res.error('already voted for this profile');
+            } else {
+              db.ProfileVote.create({ ProfileId: profile.id, UserId: req.user.id }).success(function(profileVote) {
+                res.success();
+              });
+            }
           });
         });
       }

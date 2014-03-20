@@ -21,9 +21,13 @@ exports.register = function(req, res) {
           salt: buf.toString('hex'),
           postal: req.param('postal')
         }).success(function(user) {
-          user.setProfile(db.Profile.build({ votes: 1 })).success(function(profile) {
+          if (user.isTutor) {
+            user.setProfile(db.Profile.build()).success(function(profile) {
+              res.success();
+            });
+          } else {
             res.success();
-          });
+          }
         });
       });
     }
@@ -31,39 +35,55 @@ exports.register = function(req, res) {
 }
 
 // User Login
+// TODO: Refactor login
 exports.login = function(req, res) {
   db.User.find({ where: { email: req.param('email') } }).success(function(user) {
     if (!user) {
-      res.send({
-        status: 'error',
-        message: 'Email and/or password may be incorrect.'
-      });
+      res.error('Email and/or password may be incorrect.');
     } else {
       var tmpHash = crypto.createHash('sha512').update(req.param('password') + '.' + user.salt).digest('base64');
-      if (tmpHash == user.password) {
+      if (tmpHash === user.password) {
         crypto.randomBytes(24, function(ex, buf) {
           user.updateAttributes({
             token: buf.toString('hex')
           });
           
-          user.getProfile().success(function(profile) {
+          if (user.isTutor) {
+            log.info('[LOGIN]', 'User is a tutor.');
+            user.getProfile().success(function(profile) {
+              db.ProfileVote.count({ where: { ProfileId: profile.id } }).success(function(count) {
+                log.info('[LOGIN]', 'Profile has ' + count + ' vote(s).');
+                res.success({
+                  token: buf.toString('hex'),
+                  user: {
+                    type: user.type,
+                    name: user.name,
+                    email: user.email,
+                    postal: user.postal,
+                    profile: {
+                      tagLine: profile.tagLine,
+                      description: profile.description,
+                      votes: count
+                    }
+                  }
+                });
+              });
+            });
+          } else {
+            log.info('[LOGIN]', 'User is a student.');
             res.success({
               token: buf.toString('hex'),
               user: {
                 type: user.type,
                 name: user.name,
                 email: user.email,
-                postal: user.postal,
-                profile: profile
+                postal: user.postal
               }
             });
-          });
+          }
         });
       } else {
-        res.send({
-          status: 'error',
-          message: 'Email and/or password may be incorrect.'
-        });
+        res.error('Email and/or password may be incorrect.');
       }
     }
   });
