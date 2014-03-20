@@ -2,7 +2,7 @@ var log = require('npmlog');
 var crypto = require('crypto');
 var db = require('../models');
 
-// User Registration
+// POST /users/register
 exports.register = function(req, res) {
   db.User.find({ where: { email: req.body.email } }).success(function(user) {
     if (user) {
@@ -34,7 +34,7 @@ exports.register = function(req, res) {
   });
 }
 
-// User Login
+// POST /users/login
 // TODO: Refactor login
 exports.login = function(req, res) {
   db.User.find({ where: { email: req.body.email } }).success(function(user) {
@@ -89,7 +89,7 @@ exports.login = function(req, res) {
   });
 }
 
-// User Logout
+// POST /users/logout
 exports.logout = function(req, res) {
   db.User.find({ where: { email: req.body.email } }).success(function(user) {
     user.updateAttributes({ token: null });
@@ -98,12 +98,12 @@ exports.logout = function(req, res) {
   });
 }
 
-// User Update
+// POST /users/update
 exports.update = function(req, res) {
   res.send({ status: 'not_implemented' });
 }
 
-// User Delete
+// DELETE /users
 exports.delete = function(req, res) {
   req.user.destroy().success(function() {
     res.success();

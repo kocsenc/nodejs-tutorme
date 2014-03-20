@@ -1,6 +1,7 @@
 var crypto = require('crypto');
 var db = require('../models');
 
+// GET /profiles/id
 exports.get = function(req, res) {
   if (req.body.id) {
     db.User.find({ where: { id: req.body.id } }).success(function(tutor) {
@@ -26,14 +27,17 @@ exports.get = function(req, res) {
   }
 }
 
+// POST /profiles/update
 exports.update = function(req, res) {
   res.send({ status: 'not_implemented' });
 }
 
+// POST /profiles/search
 exports.search = function(req, res) {
   res.send({ status: 'not_implemented' });
 }
 
+// POST /profiles/vote/id
 exports.vote = function(req, res) {
   db.User.find({ where: { id: req.param('id') } }).success(function(tutor) {
     if (tutor) {

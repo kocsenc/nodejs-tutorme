@@ -1,5 +1,6 @@
 var db = require('../models');
 
+// POST /messages/send
 exports.send = function(req, res) {
   var userId = req.body.userId;
   var contents = req.body.contents;
@@ -30,6 +31,7 @@ exports.send = function(req, res) {
   }
 }
 
+// GET /messages
 exports.get = function(req, res) {
   // this kind of code is when you know you did it correctly ;)
   req.user.getReceivedMessages().success(function(messages) {
