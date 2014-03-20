@@ -64,13 +64,15 @@ app.all('*', function(req, res, next) {
 app.post('/users/register', user.register);
 app.post('/users/login', user.login);
 app.post('/users/logout', user.logout);
+app.post('/users/update', user.update);
+app.delete('/users', user.delete);
 
 app.get('/messages', message.get);
 app.post('/messages/send', message.send);
 
-app.post('/profiles', profile.create);
-app.post('/profiles/vote/:id', profile.vote);
 app.get('/profiles/:id', profile.get);
+app.post('/profiles/vote/:id', profile.vote);
+app.post('/profiles/search', profile.search);
 
 app.get('/version', routes.version);
 

@@ -1,18 +1,6 @@
 var crypto = require('crypto');
 var db = require('../models');
 
-exports.create = function(req, res) {
-  db.Profile.create({
-    tagLine: req.param('tagLine'),
-    description: req.param('description')
-  }).success(function(profile) {
-    req.user.setProfile(profile);
-    res.send({
-      status: 'success'
-    });
-  });
-}
-
 exports.get = function(req, res) {
   if (req.param('id')) {
     db.User.find({ where: { id: req.param('id') } }).success(function(tutor) {
@@ -39,6 +27,11 @@ exports.get = function(req, res) {
 }
 
 exports.update = function(req, res) {
+  res.send({ status: 'not_implemented' });
+}
+
+exports.search = function(req, res) {
+  res.send({ status: 'not_implemented' });
 }
 
 exports.vote = function(req, res) {

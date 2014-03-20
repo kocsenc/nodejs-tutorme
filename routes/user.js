@@ -78,6 +78,18 @@ exports.logout = function(req, res) {
   });
 }
 
+// User Update
+exports.update = function(req, res) {
+  res.send({ status: 'not_implemented' });
+}
+
+// User Delete
+exports.delete = function(req, res) {
+  req.user.destroy().success(function() {
+    res.success();
+  });
+}
+
 // System cleanup
 exports.clearUserTokens = function(callback) {
   db.User.update({ token: null }).success(function() {
