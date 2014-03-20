@@ -3,27 +3,14 @@ var db = require('../models');
 
 // GET /profiles/id
 exports.get = function(req, res) {
-  if (req.body.id) {
-    db.User.find({ where: { id: req.body.id } }).success(function(tutor) {
-      if (tutor.type == 1) {
-        tutor.getProfile().success(function(profile) {
-          res.send({
-            status: 'success',
-            profile: profile
-          });
-        });
-      } else {
-        res.send({
-          status: 'error',
-          message: 'user is not a tutor'
-        });
-      }
+  if (req.targetUser.isTutor) {
+    req.targetUser.getProfile().success(function(profile) {
+      res.success({
+        profile: profile
+      });
     });
   } else {
-    res.send({
-      status: 'error',
-      message: 'invalid parameters'
-    });
+    res.error('user is not a tutor');
   }
 }
 
@@ -39,24 +26,20 @@ exports.search = function(req, res) {
 
 // POST /profiles/vote/id
 exports.vote = function(req, res) {
-  db.User.find({ where: { id: req.param('id') } }).success(function(tutor) {
-    if (tutor) {
-      if (tutor.type == 1) {
-        tutor.getProfile().success(function(profile) {
-          db.ProfileVote.find({ where: { UserId: req.user.id } }).success(function(vote) {
-            if (vote) {
-              res.error('already voted for this profile');
-            } else {
-              db.ProfileVote.create({ ProfileId: profile.id, UserId: req.user.id }).success(function(profileVote) {
-                res.success();
-              });
-            }
+  if (req.targetUser.isTutor) {
+    tutor.getProfile().success(function(profile) {
+      db.ProfileVote.find({ where: { UserId: req.user.id } }).success(function(vote) {
+        if (vote) {
+          res.error('already voted for this profile');
+        } else {
+          db.ProfileVote.create({ ProfileId: profile.id, UserId: req.user.id }).success(function(profileVote) {
+            res.success();
           });
-        });
-      }
-    } else {
-      res.error('no such user');
-    }
-  });
+        }
+      });
+    });
+  } else {
+    res.error('user is not a tutor');
+  }
 }
 

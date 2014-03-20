@@ -32,7 +32,8 @@ app.configure(function() {
   app.use(express.methodOverride());
   app.use(middleware.responseUtils);
   app.use(middleware.loadUser);
-  
+  app.param('id', middleware.loadTargetUser);
+  app.use(routes.requestLogging);  
   app.use(app.router);
   
   if (config.ssl.enabled) {
@@ -68,7 +69,7 @@ app.post('/users/update', user.update);
 app.delete('/users', user.delete);
 
 app.get('/messages', message.get);
-app.post('/messages/send', message.send);
+app.post('/messages/send/:id', message.send);
 
 app.get('/profiles/:id', profile.get);
 app.post('/profiles/vote/:id', profile.vote);

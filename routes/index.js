@@ -8,7 +8,7 @@ exports.authenticate = function(req, res, next, all) {
   // Don't authenticate for white
   // listed routes.
   if (all.indexOf(req.path) === -1) {
-    if (!req.body.token) {
+    if (!req.body.email || !req.body.token) {
       res.error('invalid parameters');
     } else {
       if (req.user && req.body.token == req.user.token) {
@@ -24,7 +24,7 @@ exports.authenticate = function(req, res, next, all) {
 
 // Log the request
 exports.requestLogging = function(req, res, next) {
-  log.info('[' + req.method + ']', req,url);
+  log.info('[' + req.method + ']', req.url);
   next();
 }
 
