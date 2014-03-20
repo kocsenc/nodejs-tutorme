@@ -9,7 +9,7 @@ exports.checkAuthentication = function(req, res, next, all) {
   if (all.indexOf(req.path) != -1) {
     return next();
   } else {
-    if (!req.param('email') || !req.param('token')) {
+    if (!req.body.email || !req.body.token) {
       res.send({
         status: 'error',
         message: 'invalid parameters'
@@ -17,14 +17,14 @@ exports.checkAuthentication = function(req, res, next, all) {
       
       return;
     } else {
-      db.User.find({ where: { email: req.param('email') } }).success(function(user) {
+      db.User.find({ where: { email: req.body.email } }).success(function(user) {
         if (!user) {
           res.send({
             status: 'error',
             message: 'invalid parameters'
           });
         } else {
-          if (req.param('token') == user.token) {
+          if (req.body.token == user.token) {
             // Add user instance to request to reduce
             // amount of lookups that are performed.
             req.user = user;
