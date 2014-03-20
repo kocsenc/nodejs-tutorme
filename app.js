@@ -64,7 +64,6 @@ app.all('*', function(req, res, next) {
 app.post('/users/register', user.register);
 app.post('/users/login', user.login);
 app.post('/users/logout', user.logout);
-app.post('/users/search', user.search);
 
 app.get('/messages', message.get);
 app.post('/messages/send', message.send);

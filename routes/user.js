@@ -78,13 +78,6 @@ exports.logout = function(req, res) {
   });
 }
 
-// User Search
-exports.search = function(req, res) {
-  res.send({
-    status: 'not_implemented'
-  });
-}
-
 // System cleanup
 exports.clearUserTokens = function(callback) {
   db.User.update({ token: null }).success(function() {
