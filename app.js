@@ -20,6 +20,7 @@ app.configure(function() {
   app.use(express.json());
   app.use(express.urlencoded());
   app.use(express.methodOverride());
+  app.use(injectMiddleware);
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'public')));
   
@@ -45,6 +46,22 @@ app.configure('production', function() {
   app.disable('debug');
   app.use(express.logger());
 });
+
+function injectMiddleware(req, res, next) {
+  res.error = function(message) {
+    res.send({
+      status: 'error',
+      message: message
+    });
+  }
+
+  res.success = function(resObj) {
+    resObj.status = 'success';
+    res.send(resObj);
+  }
+
+  next();
+}
 
 // Check API Authentication
 app.all('*', function(req, res, next) {
