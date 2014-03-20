@@ -41,3 +41,22 @@ exports.get = function(req, res) {
 exports.update = function(req, res) {
 }
 
+exports.vote = function(req, res) {
+  db.User.find({ where: { id: req.param('id') } }).success(function(tutor) {
+    if (tutor) {
+      if (tutor.type == 1) {
+        tutor.getProfile().success(function(profile) {
+          profile.vote++;
+          profile.save().success(function() {
+            res.send({
+              status: 'success'
+            });
+          });
+        });
+      }
+    } else {
+      req.error('no such user');
+    }
+  });
+}
+

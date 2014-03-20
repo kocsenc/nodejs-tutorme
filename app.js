@@ -78,6 +78,7 @@ app.get('/messages', message.get);
 app.post('/messages/send', message.send);
 
 app.post('/profiles', profile.create);
+app.post('/profiles/vote/:id', profile.vote);
 app.get('/profiles/:id', profile.get);
 
 app.get('/version', function(req, res) {
