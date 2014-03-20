@@ -1,3 +1,4 @@
+var log = require('npmlog');
 var crypto = require('crypto');
 var db = require('../models');
 
@@ -87,7 +88,7 @@ exports.search = function(req, res) {
 // System cleanup
 exports.clearUserTokens = function(callback) {
   db.User.update({ token: null }).success(function() {
-    console.info('*** User tokens cleared');
+    log.info('[\u2713]', 'Authorization tokens cleaned up.');
     callback();
   });
 }
