@@ -55,11 +55,12 @@ app.configure('production', function() {
   log.info('[\u2026]', 'Production Mode');
 });
 
-// TODO: Move to external file somehow
+// TODO: Move to external file
 function IllegalArgumentException(message) {
   this.message = message;
 }
 
+// TODO: Move to external file
 function injectMiddleware(req, res, next) {
   res.error = function(message) {
     if (message) {
