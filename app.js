@@ -75,6 +75,10 @@ function injectMiddleware(req, res, next) {
   }
 
   res.success = function(resObj) {
+    if (!resObj) {
+      resObj = {};
+    }
+    
     resObj.status = 'success';
     res.send(resObj);
   }

@@ -46,8 +46,7 @@ exports.vote = function(req, res) {
     if (tutor) {
       if (tutor.type == 1) {
         tutor.getProfile().success(function(profile) {
-          profile.vote++;
-          profile.save().success(function() {
+          profile.updateAttributes({ votes: profile.votes + 1 }).success(function() {
             res.send({
               status: 'success'
             });

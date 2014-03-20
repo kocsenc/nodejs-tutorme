@@ -20,16 +20,8 @@ exports.register = function(req, res) {
           salt: buf.toString('hex'),
           postal: req.param('postal')
         }).success(function(user) {
-          user.setProfile(db.Profile.build()).success(function(profile) {
-            res.success({
-              user: {
-                type: user.type,
-                name: user.name,
-                email: user.email,
-                postal: user.postal,
-                profile: profile
-              }
-            });
+          user.setProfile(db.Profile.build({ votes: 1 })).success(function(profile) {
+            res.success();
           });
         });
       });
@@ -53,15 +45,17 @@ exports.login = function(req, res) {
             token: buf.toString('hex')
           });
           
-          res.send({
-            status: 'success',
-            token: buf.toString('hex'),
-            user: {
-              type: user.type,
-              name: user.name,
-              email: user.email,
-              postal: user.postal
-            }
+          user.getProfile().success(function(profile) {
+            res.success({
+              token: buf.toString('hex'),
+              user: {
+                type: user.type,
+                name: user.name,
+                email: user.email,
+                postal: user.postal,
+                profile: profile
+              }
+            });
           });
         });
       } else {

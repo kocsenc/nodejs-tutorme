@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     votes: {
       type: DataTypes.INTEGER,
-      defaultValue: 0
+      defaultValue: 1
     }
   }, {
     associate: function(models) {
