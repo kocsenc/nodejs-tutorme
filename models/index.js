@@ -1,11 +1,21 @@
 // Sequelize Initialization
+var log       = require('npmlog');
 var fs        = require('fs');
 var path      = require('path');
 var Sequelize = require('sequelize');
 var lodash    = require('lodash');
 var config    = require('../config');
-var sequelize = new Sequelize(config.db[config.mode].name, config.db[config.mode].user, config.db[config.mode].password);
 var db        = {};
+var sequelize = new Sequelize(
+  config.db[config.mode].name,
+  config.db[config.mode].user,
+  config.db[config.mode].password,
+  {
+    logging: function(message) {
+      log.info('[\u2713]', message);
+    }
+  }
+);
 
 fs.readdirSync(__dirname).filter(function(file) {
   return ((file.indexOf('.') !== 0) && (file !== 'index.js') && (file.slice(-3) == '.js'))
