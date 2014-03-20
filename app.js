@@ -26,13 +26,13 @@ var app = express();
 
 // Configuration - All Environments
 app.configure(function() {
-  app.set('port', config.port);
-  app.set('apiVersion', config.apiVersion);
   app.use(express.favicon());
   app.use(express.json());
   app.use(express.urlencoded());
   app.use(express.methodOverride());
-  app.use(middleware.resUtils);
+  app.use(middleware.responseUtils);
+  app.use(middleware.loadUser);
+  
   app.use(app.router);
   
   if (config.ssl.enabled) {
@@ -57,7 +57,7 @@ app.configure('production', function() {
 
 // Check API Authentication
 app.all('*', function(req, res, next) {
-  routes.checkAuthentication(req, res, next, config.permissions.all);
+  routes.authenticate(req, res, next, config.permissions.all);
 });
 
 // Routing Information
@@ -82,12 +82,12 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
     throw err;
   } else {
     if (config.ssl.enabled) {
-      var server = require('https').createServer(config.serverOptions, app).listen(app.get('port'), function() {
-        log.info('[\u2713]', 'Listening on port: ' + app.get('port') + ' (SSL)');
+      var server = require('https').createServer(config.serverOptions, app).listen(config.port, function() {
+        log.info('[\u2713]', 'Listening on port: ' + config.port + ' (SSL)');
       });
     } else {
-      var server = require('http').createServer(app).listen(app.get('port'), function() {
-        log.info('[\u2713]', 'Listening on port: ' + app.get('port'));
+      var server = require('http').createServer(app).listen(config.port, function() {
+        log.info('[\u2713]', 'Listening on port: ' + config.port);
       });
     }
     
