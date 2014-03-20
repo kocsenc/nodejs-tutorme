@@ -74,5 +74,3 @@ This will generate a key and certificate, called `key.pem` and `cert.pem`, respe
 
 * [nodejs-tutorme API documentation](https://github.com/kocsenc/zakdost-node/wiki/API)
 * [Sequelize API documentation](http://sequelizejs.com/docs/latest/installation)
-
-test add
