@@ -8,6 +8,10 @@ module.exports = function(sequelize, DataTypes) {
     description: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    votes: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
     }
   }, {
     associate: function(models) {
