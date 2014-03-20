@@ -9,13 +9,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    votes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 1
-    }
   }, {
     associate: function(models) {
       Profile.hasMany(models.ProfileItem);
+      Profile.hasMany(models.ProfileVote);
     }
   });
 
