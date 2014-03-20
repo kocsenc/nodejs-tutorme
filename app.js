@@ -8,6 +8,7 @@
  *
 */
 
+var log     = require('npmlog');
 var express = require('express');
 var path    = require('path');
 var fs      = require('fs');
@@ -18,7 +19,7 @@ var message = require('./routes/message');
 var profile = require('./routes/profile');
 var db      = require('./models');
 
-console.info('***** Starting Up');
+log.info('[\u2026]', 'Initializing application...');
 
 var app = express();
 
@@ -44,24 +45,22 @@ app.configure(function() {
 
 // Configuration - Development Environment
 app.configure('development', function() {
-  console.info('**** RUNNING IN DEVELOPMENT MODE');
-  app.enable('debug');
+  log.info('[\u2026]', 'Development Mode (hard hats on)');
   app.use(express.logger('dev'));
   app.use(express.errorHandler());
 });
 
 // Configuration - Production Environment
 app.configure('production', function() {
-  console.info('**** RUNNING IN PRODUCTION MODE');
-  app.disable('debug');
-  app.use(express.logger());
+  log.info('[\u2026]', 'Production Mode');
 });
 
-// TODO: Move to external file somehow
+// TODO: Move to external file
 function IllegalArgumentException(message) {
   this.message = message;
 }
 
+// TODO: Move to external file
 function injectMiddleware(req, res, next) {
   res.error = function(message) {
     if (message) {
@@ -104,12 +103,7 @@ app.post('/profiles', profile.create);
 app.post('/profiles/vote/:id', profile.vote);
 app.get('/profiles/:id', profile.get);
 
-app.get('/version', function(req, res) {
-  res.send({
-    status: 'success',
-    version: app.get('apiVersion')
-  });
-});
+app.get('/version', routes.version);
 
 // DB Setup and Server Initialization
 db.sequelize.sync(config.syncOptions).complete(function(err) {
@@ -118,28 +112,31 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
   } else {
     if (config.ssl.enabled) {
       var server = require('https').createServer(config.serverOptions, app).listen(app.get('port'), function() {
-        console.info('*** Server listening on port ' + app.get('port') + ' (SSL)');
+        log.info('[\u2713]', 'Listening on port: ' + app.get('port') + ' (SSL)');
       });
     } else {
       var server = require('http').createServer(app).listen(app.get('port'), function() {
-        console.info('*** Server listening on port ' + app.get('port'));
+        log.info('[\u2713]', 'Listening on port: ' + app.get('port'));
       });
     }
     
     process.on('SIGINT', function() {
-      console.info('\b\b***** SIGINT Caught');
+      process.stdout.write('\b\b'); // stupid hack to get rid of '^C' string
+                                    // that some terminals print.
+      log.info('[\u26A0]', 'Caught SIGINT!');
       server.close();
     });
 
     process.on('SIGTERM', function() {
-      console.info('***** SIGTERM Caught');
+      log.info('[\u26A0]', 'Caught SIGTERM!');
       server.close();
     });
 
     server.on('close', function() {
-      console.info('*** Clearing user tokens');
+      log.info('[\u2026]', 'Cleaning up authentication tokens...');
       user.clearUserTokens(function() {
-        console.info('***** Shutdown Complete');
+        log.info('[\u2713]', 'Cleanup complete!');
+        log.info('[\u2639]', 'Bye!');
       });
     });
   }

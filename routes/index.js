@@ -1,9 +1,11 @@
+var config = require('../config');
+var log = require('npmlog');
 var crypto = require('crypto');
 var db = require('../models');
 
 // API Authentication Check
 exports.checkAuthentication = function(req, res, next, all) {
-  // TODO: Make set of whitelisted API calls in config.fs and check here
+  log.info('[' + req.method + ']', req.url); 
   if (all.indexOf(req.path) != -1) {
     return next();
   } else {
@@ -37,5 +39,10 @@ exports.checkAuthentication = function(req, res, next, all) {
       });
     }
   }
+}
+
+// GET /version
+exports.version = function(req, res) {
+  res.success({ version: config.apiVersion });
 }
 
