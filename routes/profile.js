@@ -2,8 +2,8 @@ var crypto = require('crypto');
 var db = require('../models');
 
 exports.get = function(req, res) {
-  if (req.param('id')) {
-    db.User.find({ where: { id: req.param('id') } }).success(function(tutor) {
+  if (req.body.id) {
+    db.User.find({ where: { id: req.body.id } }).success(function(tutor) {
       if (tutor.type == 1) {
         tutor.getProfile().success(function(profile) {
           res.send({
@@ -51,7 +51,7 @@ exports.vote = function(req, res) {
         });
       }
     } else {
-      req.error('no such user');
+      res.error('no such user');
     }
   });
 }

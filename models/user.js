@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     getterMethods: {
       isTutor: function() {
-        return this.type === '1';
+        return this.type === 1;
       }
     }
   });
