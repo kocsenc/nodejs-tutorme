@@ -1,4 +1,4 @@
-var config = {
+module.exports = {
   mode: 'development',
   port: 3000,
   ssl: {
@@ -22,9 +22,8 @@ var config = {
     }
   },
   permissions: {
-    all: ['/users/login', '/users/register', '/api/version']
+    all: ['/users/login', '/users/register', '/version']
   },
   apiVersion: '2' // don't touch!
 }
 
-module.exports = config;
