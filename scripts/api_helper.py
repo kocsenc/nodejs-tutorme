@@ -18,6 +18,7 @@ def executeAction(area, args, data, id=None):
   headers['Content-Type'] = 'application/json'
 
   req = urllib.request.Request(url, postData, headers)
+  
   try:
     res = urllib.request.urlopen(req)
     print(res.read().decode('utf-8'))
@@ -77,13 +78,13 @@ def parseArguments():
    
   parser.add_argument('--ssl', action='store_true', help='Turns on SSL support. (Default: off)')
   parser.add_argument('--host', default='127.0.0.1', help='Host of the application. (Default: 127.0.0.1)')
-  parser.add_argument('--port', default='3000', help='Port to connect to. (Default: 3000)')
+  parser.add_argument('--port', default='3000', help='Port to connect to. (Default: 3000)', type=int)
   
-  if len(sys.argv) == 1:
+  args = parser.parse_args()
+  
+  if not args.action:
     parser.print_help()
     sys.exit(1)
-
-  args = parser.parse_args()
 
   if args.ssl:
     args.uri = "https://"
