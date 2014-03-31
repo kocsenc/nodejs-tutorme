@@ -25,6 +25,27 @@ def executeAction(area, args, data, id=None):
   except urllib.error.HTTPError as err:
     print("Error: {}".format(err))
     sys.exit(1)
+  except urllib.error.URLError as err:
+    print("Error: {}".format(err))
+    sys.exit(1)
+
+def executeGET(requestURL, args, data):
+  url = "{}{}:{}{}".format(args.uri, args.host, args.port, requestURL)
+  
+  jsonData = json.dumps(data)
+  postData = jsonData.encode('utf-8')
+
+  headers = {}
+  headers['Content-Type'] = 'application/json'
+  
+  req = urllib.request.Request(url, postData, headers)
+
+  try:
+    res = urllib.request.urlopen(req)
+    print(res.read().decode('utf-8'))
+  except Exception as err:
+    print("Error: {}".format(err))
+    sys.exit(1)
 
 def registerAction(args):
   data = {
@@ -61,6 +82,23 @@ def voteAction(args):
 
   executeAction('profiles', args, data, args.user)
 
+def sendAction(args):
+  data = {
+    'email': args.email,
+    'token': args.token,
+    'contents': args.contents
+  }
+
+  executeAction('messages', args, data, args.user)
+
+def messagesAction(args):
+  data = {
+    'email': args.email,
+    'token': args.token
+  }
+
+  executeGET('/messages', args, data)
+
 def getTypeCode(arg):
   if arg == 'student':
     return 0
@@ -75,6 +113,8 @@ def parseArguments():
   addLoginCommands(subparsers)
   addLogoutCommands(subparsers)
   addVoteCommands(subparsers)
+  addSendCommands(subparsers)
+  addMessagesCommands(subparsers)
    
   parser.add_argument('--ssl', action='store_true', help='Turns on SSL support. (Default: off)')
   parser.add_argument('--host', default='127.0.0.1', help='Host of the application. (Default: 127.0.0.1)')
@@ -117,11 +157,25 @@ def addVoteCommands(subparsers):
   voteParser.add_argument('token', action='store', help='Token of the logged in user.')
   voteParser.add_argument('user', action='store', help='Email of the user for which to cast a vote.')
 
+def addSendCommands(subparsers):
+  sendParser = subparsers.add_parser('send', help='Send another user a message.')
+  sendParser.add_argument('email', action='store', help='Email of the logged in user.')
+  sendParser.add_argument('token', action='store', help='Token of the logged in user.')
+  sendParser.add_argument('user', action='store', help='Email of the user to send a message.')
+  sendParser.add_argument('contents', action='store', help='Message to send.')
+
+def addMessagesCommands(subparsers):
+  messagesParser = subparsers.add_parser('messages', help='Retrieve currently pending messages.')
+  messagesParser.add_argument('email', action='store', help='Email of the logged in user.')
+  messagesParser.add_argument('token', action='store', help='Token of the logged in user.')
+
 actionMapper = {
   'register': registerAction,
   'login': loginAction,
   'logout': logoutAction,
-  'vote': voteAction
+  'vote': voteAction,
+  'send': sendAction,
+  'messages': messagesAction
 }
 
 def main():
