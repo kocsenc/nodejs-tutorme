@@ -91,10 +91,8 @@ exports.login = function(req, res) {
 
 // POST /users/logout
 exports.logout = function(req, res) {
-  db.User.find({ where: { email: req.body.email } }).success(function(user) {
-    user.updateAttributes({ token: null });
-
-    res.send({ status: 'success' });
+  req.user.updateAttributes({ token: null }).success(function() {
+    res.success();
   });
 }
 
