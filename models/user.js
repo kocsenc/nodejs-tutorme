@@ -18,6 +18,17 @@ module.exports = function(sequelize, DataTypes) {
       isTutor: function() {
         return this.type === 1;
       }
+    },
+    instanceMethods: {
+      getSimple: function() {
+        var obj = {};
+        obj.name = this.name;
+        obj.email = this.email;
+        obj.postal = this.postal;
+        obj.profile = this.profile.getSimple();
+
+        return obj;
+      }
     }
   });
 

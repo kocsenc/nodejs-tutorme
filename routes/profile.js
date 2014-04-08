@@ -1,5 +1,6 @@
 var crypto = require('crypto');
 var db = require('../models');
+require('string_score');
 
 // GET /profiles/id
 exports.get = function(req, res) {
@@ -21,7 +22,23 @@ exports.update = function(req, res) {
 
 // POST /profiles/search
 exports.search = function(req, res) {
-  res.send({ status: 'not_implemented' });
+  if(req.body.query) {
+    db.User.findAll({ where: { type: 1 }, include: [ { model: db.Profile, include: [ { model: db.ProfileItem } ] } ] }).success(function(tutors) {
+      var results = new Array();
+      
+      tutors.forEach(function(tutor) {
+        tutor.profile.profileItems.forEach(function(profileItem) {
+          if (profileItem.content.score(req.body.query) > 0.2) {
+            results.push(tutor.getSimple());
+          }
+        });
+      });
+
+      res.success({ results: results });
+    });
+  } else {
+    res.error('no query provided');
+  }
 }
 
 // POST /profiles/vote/id

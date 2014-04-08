@@ -4,7 +4,10 @@ module.exports = function(sequelize, DataTypes) {
     content:  DataTypes.STRING
   }, {
     timestamps: false,
-    associate: function(models) {
+    instanceMethods: {
+      getSimple: function() {
+        return this.content;
+      }
     }
   });
 
