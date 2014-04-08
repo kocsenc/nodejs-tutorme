@@ -35,7 +35,6 @@ exports.register = function(req, res) {
 }
 
 // POST /users/login
-// TODO: Refactor login
 exports.login = function(req, res) {
   db.User.find({ where: { email: req.body.email } }).success(function(user) {
     if (!user) {
@@ -48,39 +47,15 @@ exports.login = function(req, res) {
             token: buf.toString('hex')
           });
           
-          if (user.isTutor) {
-            log.info('[LOGIN]', 'User is a tutor.');
-            user.getProfile().success(function(profile) {
-              db.ProfileVote.count({ where: { ProfileId: profile.id } }).success(function(count) {
-                log.info('[LOGIN]', 'Profile has ' + count + ' vote(s).');
-                res.success({
-                  token: buf.toString('hex'),
-                  user: {
-                    type: user.type,
-                    name: user.name,
-                    email: user.email,
-                    postal: user.postal,
-                    profile: {
-                      tagLine: profile.tagLine,
-                      description: profile.description,
-                      votes: count
-                    }
-                  }
-                });
-              });
-            });
-          } else {
-            log.info('[LOGIN]', 'User is a student.');
-            res.success({
-              token: buf.toString('hex'),
-              user: {
-                type: user.type,
-                name: user.name,
-                email: user.email,
-                postal: user.postal
-              }
-            });
-          }
+          res.success({
+            token: buf.toString('hex'),
+            user: {
+              type: user.type,
+              name: user.name,
+              email: user.email,
+              postal: user.postal
+            }
+          });
         });
       } else {
         res.error('Email and/or password may be incorrect.');
