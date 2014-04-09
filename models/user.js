@@ -22,6 +22,7 @@ module.exports = function(sequelize, DataTypes) {
     instanceMethods: {
       getSimple: function() {
         var obj = {};
+        obj.type = this.type;
         obj.name = this.name;
         obj.email = this.email;
         obj.postal = this.postal;
