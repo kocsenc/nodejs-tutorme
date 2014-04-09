@@ -99,6 +99,15 @@ def messagesAction(args):
 
   executeGET('/messages', args, data)
 
+def searchAction(args):
+  data = {
+    'email': args.email,
+    'token': args.token,
+    'query': args.query
+  }
+
+  executeAction('profiles', args, data)
+
 def getTypeCode(arg):
   if arg == 'student':
     return 0
@@ -115,6 +124,7 @@ def parseArguments():
   addVoteCommands(subparsers)
   addSendCommands(subparsers)
   addMessagesCommands(subparsers)
+  addSearchCommands(subparsers)
    
   parser.add_argument('--ssl', action='store_true', help='Turns on SSL support. (Default: off)')
   parser.add_argument('--host', default='127.0.0.1', help='Host of the application. (Default: 127.0.0.1)')
@@ -169,13 +179,20 @@ def addMessagesCommands(subparsers):
   messagesParser.add_argument('email', action='store', help='Email of the logged in user.')
   messagesParser.add_argument('token', action='store', help='Token of the logged in user.')
 
+def addSearchCommands(subparsers):
+  searchParser = subparsers.add_parser('search', help='Search for tutors.')
+  searchParser.add_argument('email', action='store', help='Email of the logged in user.')
+  searchParser.add_argument('token', action='store', help='Token of the logged in user.')
+  searchParser.add_argument('query', action='store', help='Search query to be performed.')
+
 actionMapper = {
   'register': registerAction,
   'login': loginAction,
   'logout': logoutAction,
   'vote': voteAction,
   'send': sendAction,
-  'messages': messagesAction
+  'messages': messagesAction,
+  'search': searchAction
 }
 
 def main():
