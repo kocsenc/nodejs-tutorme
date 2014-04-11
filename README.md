@@ -15,6 +15,8 @@ $ npm install
 This will automatically install all the required dependencies that the server software relies on. Next, configure the server by editing `config.js`. The key areas are the `ssl` object and the `db` object.
 
 ```javascript
+mode: "production" // (or "development", etc)
+
 ssl: {
   key:  'ssl/key.pem',
   cert: 'ssl/cert.pem'
