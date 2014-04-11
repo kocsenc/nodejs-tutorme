@@ -1,28 +1,41 @@
 {
   "mode": "production",
-  "port": 3000,
-  "ssl": {
-    "enabled": false,
-    "key":  "",
-    "cert": ""
-  },
   "syncOptions": {
     "force": false
   },
-  "db": { 
+  "environment": { 
     "development": {
-      "name": "",
-      "user": "",
-      "password": ""
+      "port": 3000,
+      "ssl": {
+        "enabled": false,
+        "key": "",
+        "cert": ""
+      },
+      "db": {
+        "name": "",
+        "user": "",
+        "password": ""
+      },
+      "permissions": {
+        "all": [ "/users/login", "/users/register", "/convert/[0-9]*", "/version" ]
+      }
     },
     "production": {
-      "name": "",
-      "user": "",
-      "password": ""
+      "port": 3000,
+      "ssl": {
+        "enabled": false,
+        "key": "",
+        "cert": ""
+      },
+      "db": {
+        "name": "",
+        "user": "",
+        "password": ""
+      },
+      "permissions": {
+        "all": [ "/users/login", "/users/register", "/convert" ]
+      }
     }
   },
-  "permissions": {
-    "all": ["/users/login", "/users/register", "/version"]
-  },
-  "apiVersion": "2" 
+  "apiVersion": "3" 
 }

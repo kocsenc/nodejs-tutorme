@@ -26,10 +26,14 @@ exports.search = function(req, res) {
     db.User.findAll({ where: { type: 1 }, include: [ { model: db.Profile, include: [ { model: db.ProfileItem } ] } ] }).success(function(tutors) {
       var results = new Array();
       
+      // this is gross, please refactor...
       tutors.forEach(function(tutor) {
         tutor.profile.profileItems.forEach(function(profileItem) {
           if (profileItem.content.score(req.body.query) > 0.2) {
-            results.push(tutor.getSimple());
+            var simpleTutorObj = tutor.getSimple();
+            if (!(simpleTutorObj in results)) {
+              results.push(simpleTutorObj);
+            }
           }
         });
       });

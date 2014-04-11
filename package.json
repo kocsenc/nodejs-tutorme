@@ -16,7 +16,8 @@
     "sequelize": "~2.0.0-beta.2",
     "lodash": "~2.4.1",
     "npmlog": "~0.0.6",
-    "string_score": "^0.1.20"
+    "string_score": "^0.1.20",
+    "ziptastic": "^0.1.0"
   },
   "devDependencies": {
     "jsdox": "~0.2.5"

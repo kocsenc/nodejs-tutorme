@@ -7,9 +7,9 @@ var lodash    = require('lodash');
 var config    = require('../config');
 var db        = {};
 var sequelize = new Sequelize(
-  config.db[config.mode].name,
-  config.db[config.mode].user,
-  config.db[config.mode].password,
+  config.environment[config.mode].db.name,
+  config.environment[config.mode].db.user,
+  config.environment[config.mode].db.password,
   {
     logging: function(message) {
       log.info('[\u2713]', message);

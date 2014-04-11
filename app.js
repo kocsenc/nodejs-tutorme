@@ -5,7 +5,6 @@
  * @copyright (c) 2014, Craig Cabrey
  * @license MIT
  * @author Craig Cabrey
- *
 */
 
 var log = require('npmlog');
@@ -35,11 +34,13 @@ app.configure(function() {
   app.param('id', middleware.loadTargetUser);
   app.use(routes.requestLogging);  
   app.use(app.router);
-  
-  if (config.ssl.enabled) {
+
+  config.active = config.environment[config.mode];
+    
+  if (config.active.ssl.enabled) {
     config.serverOptions = {
-      key: fs.readFileSync(path.join(__dirname, config.ssl.key)),
-      cert: fs.readFileSync(path.join(__dirname, config.ssl.cert))
+      key: fs.readFileSync(path.join(__dirname, config.active.ssl.key)),
+      cert: fs.readFileSync(path.join(__dirname, config.active.ssl.cert))
     }
   }
 });
@@ -58,7 +59,7 @@ app.configure('production', function() {
 
 // Check API Authentication
 app.all('*', function(req, res, next) {
-  routes.authenticate(req, res, next, config.permissions.all);
+  routes.authenticate(req, res, next, config.active.permissions.all);
 });
 
 // Routing Information
@@ -71,10 +72,11 @@ app.delete('/users', user.delete);
 app.get('/messages', message.get);
 app.post('/messages/send/:id', message.send);
 
-app.get('/profiles/:id', profile.get);
+app.post('/profiles/:id', profile.get);
 app.post('/profiles/vote/:id', profile.vote);
 app.post('/profiles/search', profile.search);
 
+app.get('/convert/:zipcode', routes.convert);
 app.get('/version', routes.version);
 
 // DB Setup and Server Initialization
@@ -82,13 +84,13 @@ db.sequelize.sync(config.syncOptions).complete(function(err) {
   if (err) {
     throw err;
   } else {
-    if (config.ssl.enabled) {
-      var server = require('https').createServer(config.serverOptions, app).listen(config.port, function() {
-        log.info('[\u2713]', 'Listening on port: ' + config.port + ' (SSL)');
+    if (config.active.ssl.enabled) {
+      var server = require('https').createServer(config.serverOptions, app).listen(config.active.port, function() {
+        log.info('[\u2713]', 'Listening on port: ' + config.active.port + ' (SSL)');
       });
     } else {
-      var server = require('http').createServer(app).listen(config.port, function() {
-        log.info('[\u2713]', 'Listening on port: ' + config.port);
+      var server = require('http').createServer(app).listen(config.active.port, function() {
+        log.info('[\u2713]', 'Listening on port: ' + config.active.port);
       });
     }
     
