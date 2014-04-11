@@ -1,6 +1,10 @@
 // Profile Model
 module.exports = function(sequelize, DataTypes) {
   var Profile = sequelize.define('Profile', {
+    rate: {
+      type: DataTypes.DECIMAL(10,2),
+      allowNull: false
+    },
     tagLine: {
       type: DataTypes.STRING,
       allowNull: false
