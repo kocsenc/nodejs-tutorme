@@ -2,6 +2,11 @@ var log = require('npmlog');
 var db = require('../models');
 var exceptions = require('./exceptions');
 
+// Middleware function to validate the presence
+// of certain parameters.
+exports.validParams = function(req, res, next) {
+}
+
 // Middleware function to load the user object for
 // the currently authenticated user.
 exports.loadUser = function(req, res, next) {
@@ -17,14 +22,19 @@ exports.loadUser = function(req, res, next) {
 // Middleware function to load the user object for 
 // every request with an email parameter present.
 exports.loadTargetUser = function(req, res, next) {
-  db.User.find({ where: { email: req.param('id') } }).success(function(user) {
-    if (user) {
-      req.targetUser = user;
-      next();
-    } else {
-      res.status(404).error('no such user');
-    }
-  });
+  var regEx = /@/gi;
+  if (regEx.test(req.param('id'))) {
+    db.User.find({ where: { email: req.param('id') } }).success(function(user) {
+      if (user) {
+        req.targetUser = user;
+        next();
+      } else {
+        res.status(404).error('no such user');
+      }
+    });
+  } else {
+    next();
+  }
 }
 
 // Middleware function to add success and

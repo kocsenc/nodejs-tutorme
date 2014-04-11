@@ -2,16 +2,17 @@ var crypto = require('crypto');
 var db = require('../models');
 require('string_score');
 
-// GET /profiles/id
-exports.get = function(req, res) {
-  if (req.targetUser.isTutor) {
-    req.targetUser.getProfile().success(function(profile) {
+// POST /profiles/id
+exports.get = function(req, res, next) {
+  var regEx = /@/gi;
+  if (regEx.test(req.body.id)) {
+    db.Profiles.find({ where : { email: req.body.email } }).success(function(profile) {
       res.success({
         profile: profile
       });
     });
   } else {
-    res.error('user is not a tutor');
+    next();
   }
 }
 
@@ -22,6 +23,7 @@ exports.update = function(req, res) {
 
 // POST /profiles/search
 exports.search = function(req, res) {
+  console.log('trying search');
   if(req.body.query) {
     db.User.findAll({ where: { type: 1 }, include: [ { model: db.Profile, include: [ { model: db.ProfileItem } ] } ] }).success(function(tutors) {
       var results = new Array();
