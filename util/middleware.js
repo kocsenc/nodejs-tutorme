@@ -22,19 +22,14 @@ exports.loadUser = function(req, res, next) {
 // Middleware function to load the user object for 
 // every request with an email parameter present.
 exports.loadTargetUser = function(req, res, next) {
-  var regEx = /@/gi;
-  if (regEx.test(req.param('id'))) {
-    db.User.find({ where: { email: req.param('id') } }).success(function(user) {
-      if (user) {
-        req.targetUser = user;
-        next();
-      } else {
-        res.status(404).error('no such user');
-      }
-    });
-  } else {
-    next();
-  }
+  db.User.find({ where: { email: req.param('id') } }).success(function(user) {
+    if (user) {
+      req.targetUser = user
+      next();
+    } else {
+      res.status(404).error('no such user');
+    }
+  });
 }
 
 // Middleware function to add success and

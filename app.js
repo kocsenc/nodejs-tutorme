@@ -72,7 +72,7 @@ app.delete('/users', user.delete);
 app.get('/messages', message.get);
 app.post('/messages/send/:id', message.send);
 
-app.post('/profiles/:id', profile.get);
+app.post('/profiles/get/:id', profile.get);
 app.post('/profiles/vote/:id', profile.vote);
 app.post('/profiles/search', profile.search);
 

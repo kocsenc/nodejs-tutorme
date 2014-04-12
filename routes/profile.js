@@ -3,16 +3,15 @@ var db = require('../models');
 require('string_score');
 
 // POST /profiles/id
-exports.get = function(req, res, next) {
-  var regEx = /@/gi;
-  if (regEx.test(req.body.id)) {
-    db.Profiles.find({ where : { email: req.body.email } }).success(function(profile) {
+exports.get = function(req, res) {
+  if (req.targetUser.isTutor) {
+    req.targetUser.getProfile().success(function(profile) {
       res.success({
         profile: profile
       });
     });
   } else {
-    next();
+    res.error('user is not a tutor');
   }
 }
 
