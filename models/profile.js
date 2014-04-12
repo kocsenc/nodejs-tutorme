@@ -21,7 +21,8 @@ module.exports = function(sequelize, DataTypes) {
     instanceMethods: {
       getSimple: function() {
         var obj = {};
-        
+
+        obj.rate = this.rate;        
         obj.tagLine = this.tagLine;
         obj.description = this.description;
         obj.profileItems = [];
