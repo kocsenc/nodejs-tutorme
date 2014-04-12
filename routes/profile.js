@@ -5,10 +5,8 @@ require('string_score');
 // POST /profiles/id
 exports.get = function(req, res) {
   if (req.targetUser.isTutor) {
-    req.targetUser.getProfile().success(function(profile) {
-      res.success({
-        profile: profile
-      });
+    res.success({
+      profile: req.targetUser.profile.getSimple()
     });
   } else {
     res.error('user is not a tutor');

@@ -22,7 +22,7 @@ exports.loadUser = function(req, res, next) {
 // Middleware function to load the user object for 
 // every request with an email parameter present.
 exports.loadTargetUser = function(req, res, next) {
-  db.User.find({ where: { email: req.param('id') } }).success(function(user) {
+  db.User.find({ where: { email: req.param('id') }, include: [ { model: db.Profile, include: [ { model: db.ProfileItem } ] } ] }).success(function(user) {
     if (user) {
       req.targetUser = user
       next();

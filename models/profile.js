@@ -30,7 +30,7 @@ module.exports = function(sequelize, DataTypes) {
         this.profileItems.forEach(function(profileItem) {
           obj.profileItems.push(profileItem.getSimple());
         });
-        
+
         return obj;
       }
     }
