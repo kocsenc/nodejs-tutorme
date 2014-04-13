@@ -1,5 +1,5 @@
 {
-  "mode": "production",
+  "mode": "development",
   "syncOptions": {
     "force": false
   },
@@ -12,9 +12,9 @@
         "cert": ""
       },
       "db": {
-        "name": "",
-        "user": "",
-        "password": ""
+        "name": "tutorme_dev",
+        "user": "dev_user",
+        "password": "new-password"
       },
       "permissions": {
         "all": [ "/users/login", "/users/register", "/convert/[0-9]*", "/version" ]
