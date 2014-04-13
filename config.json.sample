@@ -12,9 +12,9 @@
         "cert": ""
       },
       "db": {
-        "name": "",
-        "user": "",
-        "password": ""
+        "name": "tutorme_dev",
+        "user": "dev_user",
+        "password": "some_password"
       },
       "permissions": {
         "all": [ "/users/login", "/users/register", "/convert/[0-9]*", "/version" ]
@@ -23,19 +23,19 @@
     "production": {
       "port": 3000,
       "ssl": {
-        "enabled": false,
-        "key": "",
-        "cert": ""
+        "enabled": true,
+        "key": "ssl/key.pem",
+        "cert": "ssl/cert.pem"
       },
       "db": {
-        "name": "",
-        "user": "",
-        "password": ""
+        "name": "tutorme_prod",
+        "user": "prod_user",
+        "password": "some_password"
       },
       "permissions": {
         "all": [ "/users/login", "/users/register", "/convert" ]
       }
     }
   },
-  "apiVersion": "3" 
+  "apiVersion": "3"
 }
